@@ -1,4 +1,4 @@
-# Cybersecurity honors portfolio — working draft
+# Cybersecurity honors portfolio:working draft
 
 Five reports, executable offline demonstrations, recorded JSON outputs, and a static public-scholarship website. Original contract dates are shown as milestones, not completion dates. The assistant executed the included local experiments; student execution and external platform work are not verified. References are further-reading links, not a claim of independent source review.
 
