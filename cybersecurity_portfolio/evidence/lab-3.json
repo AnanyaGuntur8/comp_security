@@ -1,0 +1,8 @@
+{
+  "model overwritten guard": "AAAAD!!!",
+  "bounds check rejected": true,
+  "protected guard": "GUARD!!!",
+  "synthetic hit mean": 42.0,
+  "synthetic miss mean": 112.2,
+  "synthetic threshold": 75
+}

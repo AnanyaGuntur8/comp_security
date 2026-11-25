@@ -1,0 +1,11 @@
+{
+  "unsafe model action count": 2,
+  "allowlist accepts known file": true,
+  "allowlist rejects compound input": true,
+  "synthetic fixture SHA256": "8c8f6964dbe9e6fc2985b76e30c47ba1a2191873af0e44b4e0d0ed3c0f79d3c8",
+  "fixture printable strings": [
+    "LAB_MARKER",
+    "example.invalid"
+  ],
+  "fixture is executable": false
+}

@@ -1,0 +1,8 @@
+{
+  "unchecked cross-user read": "synthetic B",
+  "checked cross-user blocked": true,
+  "checked own record": "synthetic A",
+  "weak hash candidate position": 2,
+  "salted scrypt outputs differ": true,
+  "MFA incomplete session denied": true
+}

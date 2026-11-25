@@ -1,0 +1,10 @@
+{
+  "ECB blocks": 4,
+  "ECB unique blocks": 1,
+  "GCM tamper rejected": true,
+  "toy RSA modulus": 3233,
+  "toy RSA ciphertext": 2557,
+  "toy RSA recovered integer": 42,
+  "SHA256 changed bits": 123,
+  "XOR round trip": true
+}

@@ -1,0 +1,50 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Network Security &amp; Integrated Capstone</title><link rel="stylesheet" href="../style.css"></head><body><main><nav><a href="../index.html">Portfolio home</a><a href="../engagement.html">Public scholarship</a><a href="../README.md">Reproduce labs</a></nav><article><p class="eyebrow">PROJECT 05 / 05</p><h1>Network Security &amp; Integrated Capstone</h1><p class="muted">Technical report draft · Original due date: December 4, 2026</p><p class="note">Evidence scope: assistant-executed local demonstration, not verified student or platform completion.</p><h2>Problem summary and threat context</h2><p>Network defense requires visibility into traffic and policies that constrain which systems can communicate. Reflection and amplification can cause a small request to trigger a larger response; if source addresses are spoofed and services are reachable, this can contribute to denial of service. Segmentation reduces the impact of a compromised service. The combined local capstone uses synthetic flow summaries and policy decisions, then checks security properties from the earlier modules. It sends no network packets and uses no external target.</p><h2>Attacker walkthrough</h2><p>Inspect network() in the shared script. Five fictional flows contain protocol labels and request/response byte totals. Divide response bytes by request bytes and flag ratios at or above 10. The segmentation model explicitly permits client-to-web on port 443 and web-to-database on port 5432, but not client-to-database. Evaluate each of these paths. The integrated portion reuses the previous local modules to check that a cross-user record request is denied, modified authenticated ciphertext is rejected and compound input fails validation. These are independent regression checks, not an exploited host or a full application integration test.</p><h2>Results and interpretation</h2><p>The ratios are 15, 20, 10, 1.4 and 1.25. The first three flows meet the illustrative threshold. The client-to-web and web-to-database paths are allowed; direct client-to-database is denied. All three regression checks return true. A high ratio is not proof of abuse: legitimate services can have asymmetric request and response sizes. No packet capture, spoofed source, flood, service scan or real TLS handshake was produced by this experiment.</p><h2>Defender analysis and mitigation study</h2><p>An exposed amplification-prone service may exhibit uncontrolled resource consumption (CWE-400) in context; the synthetic records alone are insufficient for a vulnerability assignment. Reduce unnecessary exposure, restrict services to authorized clients, use response rate limiting where appropriate and apply source-address validation at network boundaries. An IDS should combine traffic volume, destination concentration, protocol semantics and baselines rather than relying on the illustrative ratio alone. Segmentation should enforce explicit permitted flows and deny other traffic by default. A Zero Trust architecture adds identity, device and context-aware authorization; the static three-node model is not a complete Zero Trust deployment.</p><h2>Detection and production implications</h2><p>Network monitoring should collect flow and packet metadata where authorized, with privacy and retention controls. Investigate spikes in packet rate, bandwidth and unusual destination patterns in context. TLS provides encrypted and authenticated transport when peer identity is validated, but it does not replace application authorization or prevent all denial-of-service attacks. VPNs similarly establish protected connectivity without automatically making every reachable service trustworthy. The capstone ties transport protection, application authorization, safe parsing and segmentation together as distinct defenses.</p><h2>Reflection and external work</h2><p>This final combined report follows the contract’s network-security and capstone grouping. It provides a reproducible synthetic policy study, not the required authorized HackTheBox or TryHackMe box. Wireshark/tcpdump captures, lab-only nmap enumeration, VPN/TLS inspection, Scapy analysis and the target 8–10 analyses plus one box remain unverified. The contract also requires a dissemination component and documented exchange; the website and engagement template support that work but do not establish that it has occurred.</p><h2>Reproducible evidence</h2><p><a href="../labs/run_labs.py">Full Python source</a> · <a href="../evidence/lab-5.json">Raw results</a></p><pre>def network():
+    # Synthetic flow records; no packets sent.
+    flows=[(&#x27;dns&#x27;,60,900),(&#x27;dns&#x27;,60,1200),(&#x27;ntp&#x27;,48,480),(&#x27;https&#x27;,500,700),(&#x27;https&#x27;,800,1000)]
+    ratios=[round(r/q,2) for _,q,r in flows]; flagged=[i+1 for i,v in enumerate(ratios) if v&gt;=10]
+    policy={(&#x27;client&#x27;,&#x27;web&#x27;,443),(&#x27;web&#x27;,&#x27;db&#x27;,5432)}
+    checks=[(&#x27;client&#x27;,&#x27;web&#x27;,443),(&#x27;client&#x27;,&#x27;db&#x27;,5432),(&#x27;web&#x27;,&#x27;db&#x27;,5432)]
+    return {&#x27;synthetic response/request ratios&#x27;:ratios,&#x27;flows flagged at ratio &gt;= 10&#x27;:flagged,&#x27;segmentation decisions&#x27;:[{&#x27;path&#x27;:list(x),&#x27;allowed&#x27;:x in policy} for x in checks],&#x27;capstone cross-user request blocked&#x27;:auth()[&#x27;checked cross-user blocked&#x27;],&#x27;capstone modified ciphertext rejected&#x27;:crypto()[&#x27;GCM tamper rejected&#x27;],&#x27;capstone compound input rejected&#x27;:injection()[&#x27;allowlist rejects compound input&#x27;]}</pre><pre>{
+  &quot;synthetic response/request ratios&quot;: [
+    15.0,
+    20.0,
+    10.0,
+    1.4,
+    1.25
+  ],
+  &quot;flows flagged at ratio &gt;= 10&quot;: [
+    1,
+    2,
+    3
+  ],
+  &quot;segmentation decisions&quot;: [
+    {
+      &quot;path&quot;: [
+        &quot;client&quot;,
+        &quot;web&quot;,
+        443
+      ],
+      &quot;allowed&quot;: true
+    },
+    {
+      &quot;path&quot;: [
+        &quot;client&quot;,
+        &quot;db&quot;,
+        5432
+      ],
+      &quot;allowed&quot;: false
+    },
+    {
+      &quot;path&quot;: [
+        &quot;web&quot;,
+        &quot;db&quot;,
+        5432
+      ],
+      &quot;allowed&quot;: true
+    }
+  ],
+  &quot;capstone cross-user request blocked&quot;: true,
+  &quot;capstone modified ciphertext rejected&quot;: true,
+  &quot;capstone compound input rejected&quot;: true
+}
+</pre><h2>Reference and further-reading links</h2><ul><li><a href="https://www.wireshark.org/">https://www.wireshark.org/</a></li><li><a href="https://tryhackme.com/">https://tryhackme.com/</a></li><li><a href="https://www.hackthebox.com/">https://www.hackthebox.com/</a></li><li><a href="https://csrc.nist.gov/pubs/sp/800/207/final">https://csrc.nist.gov/pubs/sp/800/207/final</a></li><li><a href="https://cwe.mitre.org/data/definitions/400.html">https://cwe.mitre.org/data/definitions/400.html</a></li></ul><p><a href="../engagement.html">Discuss this project</a> · <a href="project-5.md">Markdown report</a></p></article><footer><small>Computer Security • Honors enrichment • Authorized, synthetic lab work only</small></footer></main></body></html>

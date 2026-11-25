@@ -1,0 +1,43 @@
+{
+  "synthetic response/request ratios": [
+    15.0,
+    20.0,
+    10.0,
+    1.4,
+    1.25
+  ],
+  "flows flagged at ratio >= 10": [
+    1,
+    2,
+    3
+  ],
+  "segmentation decisions": [
+    {
+      "path": [
+        "client",
+        "web",
+        443
+      ],
+      "allowed": true
+    },
+    {
+      "path": [
+        "client",
+        "db",
+        5432
+      ],
+      "allowed": false
+    },
+    {
+      "path": [
+        "web",
+        "db",
+        5432
+      ],
+      "allowed": true
+    }
+  ],
+  "capstone cross-user request blocked": true,
+  "capstone modified ciphertext rejected": true,
+  "capstone compound input rejected": true
+}
